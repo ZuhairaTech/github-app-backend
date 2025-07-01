@@ -2,6 +2,16 @@ const axios = require('axios');
 const jwt = require('jsonwebtoken');
 
 module.exports = async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    // Handle preflight request
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
+    }
+    
     try {
         const appId = process.env.APP_ID;
         const privateKey = process.env.PRIVATE_KEY.replace(/\\n/g, '\n');
