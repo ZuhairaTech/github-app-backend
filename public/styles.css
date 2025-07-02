@@ -129,7 +129,7 @@ h1 {
 #userInfo {
     margin: 0;
     padding: 10px;
-    background: var(--primary-bg);
+    background: var(--accent-bg);
     border-radius: 12px;
     color: #333;
     font-size: 14px;
@@ -186,7 +186,6 @@ h1 {
 /* Stats styling (repos, followers, following) */
 #userInfo p {
     display: inline-block;
-    background: var(--accent-bg);
     padding: 6px 12px;
     border-radius: 20px;
     margin: 4px 6px;
