@@ -21,7 +21,6 @@
 
 .layout {
   width: 100%;
-  border: 1px solid var(--border-color);
   display: grid;
   grid:
     "header header header" auto
@@ -130,12 +129,13 @@ h1 {
 #userInfo {
     margin: 0;
     padding: 10px;
-    background: var(--accent-bg);
+    background: var(--primary-bg);
     border-radius: 12px;
     color: #333;
     font-size: 14px;
     border: var(--accent-color);
-    min-width: 320px;
+    min-height: 100%;
+    min-width: 200px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -456,7 +456,7 @@ h2 {
     color: var(--secondary-text);
     font-style: italic;
     padding: 3rem;
-    background: var(--accent-bg);
+    background: var(--primary-bg);
     border-radius: 15px;
     border: 2px dashed var(--border-color);
 }
@@ -632,7 +632,7 @@ h2:not(.section h2) {
     max-width: 600px;
     margin: 0 auto 1rem;
     padding: 1rem 1.5rem;
-    background: var(--secondary-bg);
+    background: var(--primary-bg);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     color: var(--primary-text);
