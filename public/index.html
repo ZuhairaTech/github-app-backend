@@ -124,7 +124,17 @@
                 if (!response.ok) throw new Error('Failed to fetch user info.');
 
                 const user = await response.json();
-                document.getElementById('userInfo').textContent = `Logged in as ${user.login}`;
+                document.getElementById('userInfo').innerHTML = `
+                    <img src="${user.avatar_url}" alt="Avatar" width="50" style="border-radius: 50%;">
+                    <p>Logged in as <a href="${user.html_url}" target="_blank">${user.login}</a></p>
+                    <p>Name: ${user.name || 'Not provided'}</p>
+                    <p>Location: ${user.location || 'Not provided'}</p>
+                    <p>Bio: ${user.bio || 'No bio available'}</p>
+                    <p>Public Repos: ${user.public_repos}</p>
+                    <p>Followers: ${user.followers}</p>
+                    <p>Following: ${user.following}</p>
+                `;
+
                 document.getElementById('logoutBtn').style.display = 'inline-block';
             } catch (error) {
                 console.error('Error fetching user info:', error);
