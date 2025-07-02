@@ -1,29 +1,39 @@
-const fetch = require('node-fetch');
+const axios = require('axios');
 
 module.exports = async (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    try {
+        const code = req.query.code;
 
-    const code = req.query.code;
+        if (!code) {
+            return res.status(400).json({ error: 'No code provided' });
+        }
 
-    // Exchange code for access token
-    const response = await fetch('https://github.com/login/oauth/access_token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-            client_id: 'Ov23liUSn6KNi2EZZGLh',
-            client_secret: 'eff364b60b9470d6cf49873c7a238bc8fc4acd77',
-            code
-        })
-    });
+        // ⚙️ Make sure these env variables are set in Vercel
+        const clientId = process.env.CLIENT_ID;
+        const clientSecret = process.env.CLIENT_SECRET;
 
-    const data = await response.json();
+        // Exchange the code for an access token
+        const tokenResponse = await axios.post(
+            'https://github.com/login/oauth/access_token',
+            {
+                client_id: clientId,
+                client_secret: clientSecret,
+                code: code
+            },
+            { headers: { Accept: 'application/json' } }
+        );
 
-    if (data.access_token) {
-        // Redirect back to frontend with the token (you can improve this later)
-        res.redirect(`https://github-app-frontend.vercel.app/?token=${data.access_token}`);
-    } else {
-        res.status(400).send('Authentication failed.');
+        const accessToken = tokenResponse.data.access_token;
+
+        if (!accessToken) {
+            return res.status(500).json({ error: 'Failed to retrieve access token' });
+        }
+
+        // Redirect to the frontend with the token in the URL
+        res.redirect(`https://github-app-backend.vercel.app/?token=${accessToken}`);
+
+    } catch (error) {
+        console.error('Error in callback:', error.response?.data || error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
