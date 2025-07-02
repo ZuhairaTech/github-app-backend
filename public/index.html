@@ -94,11 +94,6 @@
             window.location.href = 'https://github.com/login/oauth/authorize?client_id=Ov23liUSn6KNi2EZZGLh&scope=repo';
         });
 
-        if (!token) {
-            alert('Please login first.');
-            return;
-        }
-
         // Get token from URL
         const urlParams = new URLSearchParams(window.location.search);
         let token = urlParams.get('token');
