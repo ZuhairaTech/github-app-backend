@@ -134,7 +134,7 @@
                         const user = await response.json();
                         document.getElementById('userInfo').innerHTML = `
                             <img src="${user.avatar_url}" alt="Avatar" width="50" style="border-radius: 50%;">
-                            <p>Logged in as <a href="${user.html_url}" target="_blank">${user.login}</a></p>
+                            <p><a href="${user.html_url}" target="_blank">${user.login}</a></p>
                             <p>Name: ${user.name || 'Not provided'}</p>
                             <p>📍 ${user.location || 'Not provided'}</p>
                             <p>Public Repos: ${user.public_repos}</p>
