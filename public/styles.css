@@ -71,7 +71,9 @@ h1 {
     gap: 15px;
     margin: 20px 0;
     padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     border-radius: 12px;
+    border: 1px solid #dee2e6;
 }
 
 #loginBtn, #logoutBtn {
@@ -114,13 +116,151 @@ h1 {
 /* User info styling */
 #userInfo {
     margin: 0;
-    padding: 8px 16px;
-    background: rgba(13, 110, 253, 0.1);
-    border-radius: 6px;
-    color: #0d6efd;
-    font-weight: 500;
+    padding: 20px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 12px;
+    color: #333;
     font-size: 14px;
-    border: 1px solid rgba(13, 110, 253, 0.2);
+    border: 1px solid #e0e6ed;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+}
+
+/* User profile image */
+#userInfo img {
+    border: 3px solid #0d6efd;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#userInfo img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(13, 110, 253, 0.3);
+}
+
+/* User info paragraphs */
+#userInfo p {
+    margin: 4px 0;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+/* First paragraph (login info) */
+#userInfo p:first-of-type {
+    font-size: 16px;
+    font-weight: 600;
+    color: #0d6efd;
+    margin-bottom: 8px;
+}
+
+/* Username link styling */
+#userInfo a {
+    color: #0d6efd;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+#userInfo a:hover {
+    background: rgba(13, 110, 253, 0.1);
+    text-decoration: underline;
+}
+
+/* Stats styling (repos, followers, following) */
+#userInfo p:nth-last-child(-n+3) {
+    display: inline-block;
+    background: linear-gradient(45deg, #e8f4f8, #f0f8ff);
+    padding: 6px 12px;
+    border-radius: 20px;
+    margin: 4px 6px;
+    font-size: 13px;
+    border: 1px solid #bee5eb;
+    color: #0c5460;
+    font-weight: 600;
+}
+
+/* Bio styling */
+#userInfo p:nth-child(5) {
+    font-style: italic;
+    color: #6c757d;
+    background: rgba(108, 117, 125, 0.1);
+    padding: 8px 12px;
+    border-radius: 8px;
+    border-left: 3px solid #6c757d;
+    max-width: 280px;
+    word-wrap: break-word;
+}
+
+/* Stats container */
+.user-stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+/* Button loading state (optional) */
+.auth-btn-loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.auth-btn-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .auth-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    #loginBtn, #logoutBtn {
+        width: 100%;
+        justify-self: stretch;
+    }
+    
+    #userInfo {
+        text-align: center;
+        min-width: auto;
+        padding: 16px;
+    }
+    
+    #userInfo p:nth-last-child(-n+3) {
+        display: block;
+        margin: 4px 0;
+        width: 100%;
+    }
+    
+    #userInfo p:nth-child(5) {
+        max-width: 100%;
+    }
 }
 
 /* Button loading state (optional) */
