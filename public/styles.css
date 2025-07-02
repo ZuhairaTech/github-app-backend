@@ -64,6 +64,109 @@ h1 {
     position: relative;
 }
 
+/* Login/Logout Button Styles */
+.auth-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+#loginBtn, #logoutBtn {
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(13, 110, 253, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+#loginBtn:hover, #logoutBtn:hover {
+    background: linear-gradient(135deg, #0b5ed7 0%, #0a58ca 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+}
+
+#loginBtn:active, #logoutBtn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(13, 110, 253, 0.2);
+}
+
+/* Logout button specific styling */
+#logoutBtn {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+}
+
+#logoutBtn:hover {
+    background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+/* User info styling */
+#userInfo {
+    margin: 0;
+    padding: 8px 16px;
+    background: rgba(13, 110, 253, 0.1);
+    border-radius: 6px;
+    color: #0d6efd;
+    font-weight: 500;
+    font-size: 14px;
+    border: 1px solid rgba(13, 110, 253, 0.2);
+}
+
+/* Button loading state (optional) */
+.auth-btn-loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.auth-btn-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .auth-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    #loginBtn, #logoutBtn {
+        width: 100%;
+        justify-self: stretch;
+    }
+    
+    #userInfo {
+        text-align: center;
+    }
+}
+
 h2 {
     font-size: 2rem;
     font-weight: 600;
