@@ -97,9 +97,9 @@
             </div>
         </section>
         
-        <div class="section" id="chart">
+        <div class="container" id="chart">
             <h2>Repository Commits Bar Chart</h2>
-            <button id="loadChart">Load Bar Chart</button>
+            <button id="loadChart" class="btn">Load Bar Chart</button>
             <canvas id="commitChart" width="400" height="200"></canvas>
         </div>
 
@@ -412,8 +412,8 @@
         });
 
         document.getElementById('loadChart').addEventListener('click', async () => {
-            const token = localStorage.getItem('githubToken');
-            if (!token) return alert('Please login first.');
+            const token = window.githubToken;
+            if (!token) return;
 
             try {
                 // Fetch user repositories
