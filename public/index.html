@@ -35,16 +35,31 @@
 
                 <div class="repos-container">
                     <div class="repos-header">
-                        <span>📁 My Repositories</span>
-                        <span id="repoCount">0</span>
+                        <span class="header-tab active" data-tab="reposTab">📁 My Repositories</span>
+                        <span class="header-tab" data-tab="chartTab">📊 Commits Chart</span>
                     </div>
-                    <div id="repoList" class="repo-list">
-                        <div class="empty-state">
-                            <h3>No repositories loaded</h3>
-                            <p>Click "Load Repositories" to fetch your GitHub repositories</p>
+
+
+                    <div id="reposTab" class="tab-content active">
+                        
+                            <div id="repoList" class="repo-list">
+                                <div class="empty-state">
+                                    <h3>No repositories loaded</h3>
+                                    <p>Click "Load Repositories" to fetch your GitHub repositories</p>
+                                </div>
+                            </div>
+                        
+                    </div>
+
+                    <div id="chartTab" class="tab-content">
+                        <div id="chart" class="chart-container">
+                            <button id="loadChart" class="btn">Load Bar Chart</button>
+                            <canvas id="commitChart" width="400" height="200"></canvas>
                         </div>
                     </div>
                 </div>
+
+
 
                 <!-- Issue Modal -->
                 <div id="issueModal" class="modal">
@@ -97,19 +112,23 @@
             </div>
         </section>
         
-        <div class="container" id="chart">
-            <h2>Repository Commits Bar Chart</h2>
-            <button id="loadChart" class="btn">Load Bar Chart</button>
-            <canvas id="commitChart" width="400" height="200"></canvas>
-        </div>
-
-
-        
-
     <script>
         let repositories = [];
         let currentRepo = '';
         
+        document.querySelectorAll('.header-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active from all tabs and contents
+                document.querySelectorAll('.header-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                // Activate the clicked tab
+                tab.classList.add('active');
+                const target = tab.getAttribute('data-tab');
+                document.getElementById(target).classList.add('active');
+            });
+        });
+
         // Auth functionality
         document.getElementById('loginBtn').addEventListener('click', () => {
             window.location.href = 'https://github.com/login/oauth/authorize?client_id=Ov23liUSn6KNi2EZZGLh&scope=repo';
