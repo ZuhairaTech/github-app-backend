@@ -13,83 +13,91 @@
             <p class="subtitle">Manage all your repositories in one place</p>
         </div>
 
-        <div class="auth-section">
-            <div id="userInfo"></div>
-            <button id="loginBtn" class="btn">🔐 Connect to GitHub</button>
-            <button id="logoutBtn" class="btn btn-secondary" style="display:none;">🚪 Disconnect</button>
-        </div>
+        <section class="layout">
+            <div class="sidebar">
+                <div class="auth-section">
+                    <div id="userInfo"></div>
+                    <button id="loginBtn" class="btn">🔐 Connect to GitHub</button>
+                    <button id="logoutBtn" class="btn btn-secondary" style="display:none;">🚪 Disconnect</button>
+                </div>
+            </div>
+            <div class="body">
+                <div class="controls">
+                    <div class="controls-grid">
+                        <div class="search-section">
+                            <input type="text" id="searchInput" class="search-input" placeholder="Search repositories...">
+                            <button id="refreshBtn" class="btn">🔄 Refresh</button>
+                        </div>
+                        <button id="loadReposBtn" class="btn">📥 Load Repositories</button>
+                    </div>
+                </div>
 
-        <div class="controls">
-            <div class="controls-grid">
-                <div class="search-section">
-                    <input type="text" id="searchInput" class="search-input" placeholder="Search repositories...">
-                    <button id="refreshBtn" class="btn">🔄 Refresh</button>
+                <div class="repos-container">
+                    <div class="repos-header">
+                        <span>📁 My Repositories</span>
+                        <span id="repoCount">0</span>
+                    </div>
+                    <div id="repoList" class="repo-list">
+                        <div class="empty-state">
+                            <h3>No repositories loaded</h3>
+                            <p>Click "Load Repositories" to fetch your GitHub repositories</p>
+                        </div>
+                    </div>
                 </div>
-                <button id="loadReposBtn" class="btn">📥 Load Repositories</button>
-            </div>
-        </div>
 
-        <div class="repos-container">
-            <div class="repos-header">
-                <span>📁 My Repositories</span>
-                <span id="repoCount">0</span>
-            </div>
-            <div id="repoList" class="repo-list">
-                <div class="empty-state">
-                    <h3>No repositories loaded</h3>
-                    <p>Click "Load Repositories" to fetch your GitHub repositories</p>
+                <!-- Issue Modal -->
+                <div id="issueModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 class="modal-title">Create New Issue</h2>
+                            <button class="close-btn" onclick="closeModal('issueModal')">&times;</button>
+                        </div>
+                        <div class="form-group">
+                            <label for="issueTitle">Issue Title</label>
+                            <input type="text" id="issueTitle" class="form-input" placeholder="Brief description of the issue">
+                        </div>
+                        <div class="form-group">
+                            <label for="issueBody">Issue Description</label>
+                            <textarea id="issueBody" class="form-input form-textarea" placeholder="Detailed description of the issue..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button id="createIssueBtn" class="btn">✨ Create Issue</button>
+                        </div>
+                        <div id="issueResult" class="result" style="display:none;"></div>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Issue Modal -->
-        <div id="issueModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title">Create New Issue</h2>
-                    <button class="close-btn" onclick="closeModal('issueModal')">&times;</button>
+                <!-- Update Issue Modal -->
+                <div id="updateModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 class="modal-title">Update Issue</h2>
+                            <button class="close-btn" onclick="closeModal('updateModal')">&times;</button>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateIssueNumber">Issue Number</label>
+                            <input type="text" id="updateIssueNumber" class="form-input" placeholder="e.g., 123">
+                        </div>
+                        <div class="form-group">
+                            <label for="updateTitle">New Title</label>
+                            <input type="text" id="updateTitle" class="form-input" placeholder="Updated issue title">
+                        </div>
+                        <div class="form-group">
+                            <label for="updateBody">New Description</label>
+                            <textarea id="updateBody" class="form-input form-textarea" placeholder="Updated issue description..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button id="updateIssueBtn" class="btn">🔄 Update Issue</button>
+                        </div>
+                        <div id="updateResult" class="result" style="display:none;"></div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="issueTitle">Issue Title</label>
-                    <input type="text" id="issueTitle" class="form-input" placeholder="Brief description of the issue">
-                </div>
-                <div class="form-group">
-                    <label for="issueBody">Issue Description</label>
-                    <textarea id="issueBody" class="form-input form-textarea" placeholder="Detailed description of the issue..."></textarea>
-                </div>
-                <div class="form-group">
-                    <button id="createIssueBtn" class="btn">✨ Create Issue</button>
-                </div>
-                <div id="issueResult" class="result" style="display:none;"></div>
             </div>
-        </div>
+            </div>
+        </section>
+        
 
-        <!-- Update Issue Modal -->
-        <div id="updateModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title">Update Issue</h2>
-                    <button class="close-btn" onclick="closeModal('updateModal')">&times;</button>
-                </div>
-                <div class="form-group">
-                    <label for="updateIssueNumber">Issue Number</label>
-                    <input type="text" id="updateIssueNumber" class="form-input" placeholder="e.g., 123">
-                </div>
-                <div class="form-group">
-                    <label for="updateTitle">New Title</label>
-                    <input type="text" id="updateTitle" class="form-input" placeholder="Updated issue title">
-                </div>
-                <div class="form-group">
-                    <label for="updateBody">New Description</label>
-                    <textarea id="updateBody" class="form-input form-textarea" placeholder="Updated issue description..."></textarea>
-                </div>
-                <div class="form-group">
-                    <button id="updateIssueBtn" class="btn">🔄 Update Issue</button>
-                </div>
-                <div id="updateResult" class="result" style="display:none;"></div>
-            </div>
-        </div>
-    </div>
+        
 
     <script>
         let repositories = [];
