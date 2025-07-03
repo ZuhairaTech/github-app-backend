@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>GitHub Repository Dashboard</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -96,6 +97,12 @@
             </div>
         </section>
         
+        <div class="section" id="chart">
+            <h2>Repository Commits Bar Chart</h2>
+            <button id="loadChart">Load Bar Chart</button>
+            <canvas id="commitChart" width="400" height="200"></canvas>
+        </div>
+
 
         
 
@@ -403,6 +410,80 @@
                 showResult('updateResult', '❌ Network error', 'error');
             }
         });
+
+        document.getElementById('loadChart').addEventListener('click', async () => {
+            const token = localStorage.getItem('githubToken');
+            if (!token) return alert('Please login first.');
+
+            try {
+                // Fetch user repositories
+                const reposResponse = await fetch('https://api.github.com/user/repos', {
+                    headers: { Authorization: `token ${token}` }
+                });
+                const repos = await reposResponse.json();
+
+                // Prepare promises to fetch commits count for each repo
+                const commitPromises = repos.map(async repo => {
+                    const commitsResponse = await fetch(`https://api.github.com/repos/${repo.full_name}/commits?per_page=1`, {
+                        headers: { Authorization: `token ${token}` }
+                    });
+                    const linkHeader = commitsResponse.headers.get('Link');
+                    let totalCommits = 0;
+
+                    if (linkHeader && linkHeader.includes('rel="last"')) {
+                        const lastPageUrl = linkHeader.split(',').find(s => s.includes('rel="last"')).split(';')[0].trim().slice(1, -1);
+                        const urlParams = new URLSearchParams(new URL(lastPageUrl).search);
+                        totalCommits = parseInt(urlParams.get('page'));
+                    } else {
+                        // If no link header, the repo may have 1 or 0 commits
+                        const commits = await commitsResponse.json();
+                        totalCommits = commits.length;
+                    }
+
+                    return { name: repo.name, commits: totalCommits, pushed_at: repo.pushed_at };
+                });
+
+                const commitData = await Promise.all(commitPromises);
+
+                // Sort repos by pushed_at (latest first)
+                commitData.sort((a, b) => new Date(a.pushed_at) - new Date(b.pushed_at));
+
+                // Prepare data for Chart.js
+                const labels = commitData.map(item => item.name);
+                const data = commitData.map(item => item.commits);
+
+                // Render chart
+                renderBarChart(labels, data);
+
+            } catch (error) {
+                console.error('Error loading chart:', error);
+            }
+        });
+
+        // Chart.js rendering function
+        function renderBarChart(labels, data) {
+            const ctx = document.getElementById('commitChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Number of Commits',
+                        data: data,
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
 
         // Logout
         document.getElementById('logoutBtn').addEventListener('click', () => {
