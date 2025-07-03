@@ -66,37 +66,31 @@
                 <p id="issueResult"></p>
             </div>
 
-    <!-- PATCH Section -->
-    <div class="section patch" id="patch">
-        <h2>Update Issue</h2>
-        <input type="text" id="patchRepo" placeholder="Repository (owner/repo)" />
-        <input type="text" id="patchIssueNumber" placeholder="Issue Number" />
-        <input type="text" id="patchTitle" placeholder="New Issue Title" />
-        <textarea id="patchBody" placeholder="New Issue Description"></textarea>
-        <button id="patchIssue">Update Issue</button>
-        <p id="patchResult"></p>
-    </div>
+            <!-- PATCH Section -->
+            <div class="section patch" id="patch">
+                <h2>Update Issue</h2>
+                <input type="text" id="patchRepo" placeholder="Repository (owner/repo)" />
+                <input type="text" id="patchIssueNumber" placeholder="Issue Number" />
+                <input type="text" id="patchTitle" placeholder="New Issue Title" />
+                <textarea id="patchBody" placeholder="New Issue Description"></textarea>
+                <button id="patchIssue">Update Issue</button>
+                <p id="patchResult"></p>
+            </div>
 
             <!-- PUT Section -->
             <div class="section put" id="put">
-                <h2>Replace Resources</h2>
-                <div class="empty-section">
-                    <div class="icon">🔄</div>
-                    <h3>PUT Operations</h3>
-                    <p>This section will contain functionality to replace or create GitHub resources like repository settings, collaborators, and subscription management using PUT requests.</p>
-                    <span class="coming-soon">Coming Soon</span>
-                </div>
+                <h2>Star Repository</h2>
+                <input type="text" id="starRepo" placeholder="Repository (owner/repo)" />
+                <button id="starBtn">Star Repository</button>
+                <p id="starResult"></p>
             </div>
 
             <!-- DELETE Section -->
             <div class="section delete" id="delete">
-                <h2>Delete Resources</h2>
-                <div class="empty-section">
-                    <div class="icon">🗑️</div>
-                    <h3>DELETE Operations</h3>
-                    <p>This section will contain functionality to delete GitHub resources like repositories, issues, comments, and remove collaborators using DELETE requests.</p>
-                    <span class="coming-soon">Coming Soon</span>
-                </div>
+                <h2>Unstar Repository</h2>
+                <input type="text" id="unstarRepo" placeholder="Repository (owner/repo)" />
+                <button id="unstarBtn">Unstar Repository</button>
+                <p id="unstarResult"></p>
             </div>
 
             <script>
@@ -205,35 +199,82 @@
                     }
                 });
 
-        document.getElementById('patchIssue').addEventListener('click', async () => {
-            const repo = document.getElementById('patchRepo').value;
-            const issueNumber = document.getElementById('patchIssueNumber').value;
-            const title = document.getElementById('patchTitle').value;
-            const body = document.getElementById('patchBody').value;
+                document.getElementById('patchIssue').addEventListener('click', async () => {
+                    const repo = document.getElementById('patchRepo').value;
+                    const issueNumber = document.getElementById('patchIssueNumber').value;
+                    const title = document.getElementById('patchTitle').value;
+                    const body = document.getElementById('patchBody').value;
 
-            try {
-                const token = localStorage.getItem('githubToken');
+                    try {
+                        const token = localStorage.getItem('githubToken');
 
-                const response = await fetch(`https://api.github.com/repos/${repo}/issues/${issueNumber}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `token ${token}`
-                    },
-                    body: JSON.stringify({ title, body })
+                        const response = await fetch(`https://api.github.com/repos/${repo}/issues/${issueNumber}`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `token ${token}`
+                            },
+                            body: JSON.stringify({ title, body })
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            document.getElementById('patchResult').innerText = `Issue Updated: ${data.html_url}`;
+                        } else {
+                            document.getElementById('patchResult').innerText = 'Error updating issue.';
+                        }
+                    } catch (error) {
+                        console.error(error);
+                        document.getElementById('patchResult').innerText = 'Error updating issue.';
+                    }
                 });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    document.getElementById('patchResult').innerText = `Issue Updated: ${data.html_url}`;
-                } else {
-                    document.getElementById('patchResult').innerText = 'Error updating issue.';
-                }
-            } catch (error) {
-                console.error(error);
-                document.getElementById('patchResult').innerText = 'Error updating issue.';
-            }
-        });
+                document.getElementById('starBtn').addEventListener('click', async () => {
+                    const repo = document.getElementById('starRepo').value;
+                    const token = localStorage.getItem('githubToken');
+
+                    try {
+                        const response = await fetch(`https://api.github.com/user/starred/${repo}`, {
+                            method: 'PUT',
+                            headers: {
+                                Authorization: `token ${token}`
+                            }
+                        });
+
+                        if (response.status === 204) {
+                            document.getElementById('starResult').innerText = 'Repository starred successfully!';
+                        } else {
+                            document.getElementById('starResult').innerText = 'Failed to star repository.';
+                        }
+                    } catch (error) {
+                        console.error(error);
+                        document.getElementById('starResult').innerText = 'Error starring repository.';
+                    }
+                });
+
+                document.getElementById('unstarBtn').addEventListener('click', async () => {
+                    const repo = document.getElementById('unstarRepo').value;
+                    const token = localStorage.getItem('githubToken');
+
+                    try {
+                        const response = await fetch(`https://api.github.com/user/starred/${repo}`, {
+                            method: 'DELETE',
+                            headers: {
+                                Authorization: `token ${token}`
+                            }
+                        });
+
+                        if (response.status === 204) {
+                            document.getElementById('unstarResult').innerText = 'Repository unstarred successfully!';
+                        } else {
+                            document.getElementById('unstarResult').innerText = 'Failed to unstar repository.';
+                        }
+                    } catch (error) {
+                        console.error(error);
+                        document.getElementById('unstarResult').innerText = 'Error unstarring repository.';
+                    }
+                });
+
 
 
 
