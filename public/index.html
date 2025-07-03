@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GitHub App - REST API Explorer</title>
+    <title>GitHub Repository Dashboard</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
     <div class="container">
         <div class="header">
-            <div class="decorative-element"></div>
-            <h1 class="main-title">🚀 GitHub REST API Explorer</h1>
+            <h1 class="main-title">🚀 GitHub Repository Dashboard</h1>
+            <p class="subtitle">Manage all your repositories in one place</p>
         </div>
 
         <div class="auth-section">
@@ -19,109 +19,82 @@
             <button id="logoutBtn" class="btn btn-secondary" style="display:none;">🚪 Disconnect</button>
         </div>
 
-        <div class="nav-tabs">
-            <button class="nav-tab active" data-section="get">📥 GET - Retrieve</button>
-            <button class="nav-tab" data-section="post">📤 POST - Create</button>
-            <button class="nav-tab" data-section="patch">🔧 PATCH - Update</button>
-            <button class="nav-tab" data-section="put">⭐ PUT - Star</button>
-            <button class="nav-tab" data-section="delete">🗑️ DELETE - Remove</button>
-        </div>
-
-        <!-- GET Section -->
-        <div class="section active" id="get">
-            <h2>📥 Retrieve Repositories</h2>
-            <div class="form-group">
-                <button id="fetchRepos" class="btn">🔍 Fetch My Repositories</button>
-            </div>
-            <div id="repoListContainer">
-                <ul id="repoList" class="repo-list"></ul>
-            </div>
-        </div>
-
-        <!-- POST Section -->
-        <div class="section" id="post">
-            <h2>📤 Create New Issue</h2>
-            <div class="form-group">
-                <label for="repoName">Repository (owner/repo)</label>
-                <input type="text" id="repoName" placeholder="e.g., octocat/Hello-World" />
-            </div>
-            <div class="form-group">
-                <label for="issueTitle">Issue Title</label>
-                <input type="text" id="issueTitle" placeholder="Brief description of the issue" />
-            </div>
-            <div class="form-group">
-                <label for="issueBody">Issue Description</label>
-                <textarea id="issueBody" placeholder="Detailed description of the issue..."></textarea>
-            </div>
-            <button id="createIssue" class="btn">✨ Create Issue</button>
-            <div id="issueResult" class="result" style="display:none;"></div>
-        </div>
-
-        <!-- PATCH Section -->
-        <div class="section" id="patch">
-            <h2>🔧 Update Existing Issue</h2>
-            <div class="two-column">
-                <div class="form-group">
-                    <label for="patchRepo">Repository (owner/repo)</label>
-                    <input type="text" id="patchRepo" placeholder="e.g., octocat/Hello-World" />
+        <div class="controls">
+            <div class="controls-grid">
+                <div class="search-section">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search repositories...">
+                    <button id="refreshBtn" class="btn">🔄 Refresh</button>
                 </div>
-                <div class="form-group">
-                    <label for="patchIssueNumber">Issue Number</label>
-                    <input type="text" id="patchIssueNumber" placeholder="e.g., 123" />
+                <button id="loadReposBtn" class="btn">📥 Load Repositories</button>
+            </div>
+        </div>
+
+        <div class="repos-container">
+            <div class="repos-header">
+                <span>📁 My Repositories</span>
+                <span id="repoCount">0</span>
+            </div>
+            <div id="repoList" class="repo-list">
+                <div class="empty-state">
+                    <h3>No repositories loaded</h3>
+                    <p>Click "Load Repositories" to fetch your GitHub repositories</p>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="patchTitle">New Issue Title</label>
-                <input type="text" id="patchTitle" placeholder="Updated issue title" />
-            </div>
-            <div class="form-group">
-                <label for="patchBody">New Issue Description</label>
-                <textarea id="patchBody" placeholder="Updated issue description..."></textarea>
-            </div>
-            <button id="patchIssue" class="btn">🔄 Update Issue</button>
-            <div id="patchResult" class="result" style="display:none;"></div>
         </div>
 
-        <!-- PUT Section -->
-        <div class="section" id="put">
-            <h2>⭐ Star Repository</h2>
-            <div class="form-group">
-                <label for="starRepo">Repository (owner/repo)</label>
-                <input type="text" id="starRepo" placeholder="e.g., octocat/Hello-World" />
+        <!-- Issue Modal -->
+        <div id="issueModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Create New Issue</h2>
+                    <button class="close-btn" onclick="closeModal('issueModal')">&times;</button>
+                </div>
+                <div class="form-group">
+                    <label for="issueTitle">Issue Title</label>
+                    <input type="text" id="issueTitle" class="form-input" placeholder="Brief description of the issue">
+                </div>
+                <div class="form-group">
+                    <label for="issueBody">Issue Description</label>
+                    <textarea id="issueBody" class="form-input form-textarea" placeholder="Detailed description of the issue..."></textarea>
+                </div>
+                <div class="form-group">
+                    <button id="createIssueBtn" class="btn">✨ Create Issue</button>
+                </div>
+                <div id="issueResult" class="result" style="display:none;"></div>
             </div>
-            <button id="starBtn" class="btn">⭐ Star Repository</button>
-            <div id="starResult" class="result" style="display:none;"></div>
         </div>
 
-        <!-- DELETE Section -->
-        <div class="section" id="delete">
-            <h2>🗑️ Unstar Repository</h2>
-            <div class="form-group">
-                <label for="unstarRepo">Repository (owner/repo)</label>
-                <input type="text" id="unstarRepo" placeholder="e.g., octocat/Hello-World" />
+        <!-- Update Issue Modal -->
+        <div id="updateModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Update Issue</h2>
+                    <button class="close-btn" onclick="closeModal('updateModal')">&times;</button>
+                </div>
+                <div class="form-group">
+                    <label for="updateIssueNumber">Issue Number</label>
+                    <input type="text" id="updateIssueNumber" class="form-input" placeholder="e.g., 123">
+                </div>
+                <div class="form-group">
+                    <label for="updateTitle">New Title</label>
+                    <input type="text" id="updateTitle" class="form-input" placeholder="Updated issue title">
+                </div>
+                <div class="form-group">
+                    <label for="updateBody">New Description</label>
+                    <textarea id="updateBody" class="form-input form-textarea" placeholder="Updated issue description..."></textarea>
+                </div>
+                <div class="form-group">
+                    <button id="updateIssueBtn" class="btn">🔄 Update Issue</button>
+                </div>
+                <div id="updateResult" class="result" style="display:none;"></div>
             </div>
-            <button id="unstarBtn" class="btn">💔 Unstar Repository</button>
-            <div id="unstarResult" class="result" style="display:none;"></div>
-        </div>
-
-        <div class="footer">
-            <p>Built with ❤️ using GitHub REST API</p>
         </div>
     </div>
 
     <script>
-        // Navigation functionality
-        document.querySelectorAll('.nav-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                
-                tab.classList.add('active');
-                const sectionId = tab.getAttribute('data-section');
-                document.getElementById(sectionId).classList.add('active');
-            });
-        });
-
+        let repositories = [];
+        let currentRepo = '';
+        
         // Auth functionality
         document.getElementById('loginBtn').addEventListener('click', () => {
             window.location.href = 'https://github.com/login/oauth/authorize?client_id=Ov23liUSn6KNi2EZZGLh&scope=repo';
@@ -132,7 +105,6 @@
         let token = urlParams.get('token');
 
         if (token) {
-            // Store token in memory instead of localStorage
             window.githubToken = token;
             if (window.history.replaceState) {
                 window.history.replaceState({}, document.title, '/');
@@ -140,16 +112,35 @@
         }
 
         // Helper functions
-        function showResult(elementId, message, isError = false) {
+        function showResult(elementId, message, type = 'info') {
             const element = document.getElementById(elementId);
             element.textContent = message;
-            element.className = isError ? 'result error' : 'result';
+            element.className = `result ${type}`;
             element.style.display = 'block';
+            
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 5000);
         }
 
-        function showLoading(containerId) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '<div class="loading">Loading repositories</div>';
+        function openModal(modalId, repoName = '') {
+            currentRepo = repoName;
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            // Clear form inputs
+            const modal = document.getElementById(modalId);
+            const inputs = modal.querySelectorAll('input, textarea');
+            inputs.forEach(input => input.value = '');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
         }
 
         async function loadUserInfo() {
@@ -170,7 +161,6 @@
                         <div class="user-details">
                             <h3><a href="${user.html_url}" target="_blank">${user.login}</a></h3>
                             <p><strong>Name:</strong> ${user.name || 'Not provided'}</p>
-                            <p><strong>Location:</strong> ${user.location || 'Not provided'}</p>
                             <div class="stats-grid">
                                 <div class="stat-card">
                                     <div class="stat-number">${user.public_repos}</div>
@@ -193,59 +183,157 @@
                 document.getElementById('logoutBtn').style.display = 'inline-block';
             } catch (error) {
                 console.error('Error fetching user info:', error);
-                showResult('userInfo', 'Error loading user information', true);
             }
         }
 
-        loadUserInfo();
+        async function loadRepositories() {
+            const repoListElement = document.getElementById('repoList');
+            repoListElement.innerHTML = '<div class="loading">Loading repositories</div>';
 
-        // Fetch repositories
-        document.getElementById('fetchRepos').addEventListener('click', async () => {
-            showLoading('repoListContainer');
-            
             try {
                 const currentToken = window.githubToken;
-                const response = await fetch('https://github-app-backend.vercel.app/api/list-repos', {
+                
+                // Fetch repositories
+                const reposResponse = await fetch('https://github-app-backend.vercel.app/api/list-repos', {
                     headers: { Authorization: `token ${currentToken}` }
                 });
 
-                if (!response.ok) throw new Error('Failed to fetch repositories.');
+                if (!reposResponse.ok) throw new Error('Failed to fetch repositories.');
 
-                const data = await response.json();
-                const repos = data.repositories;
-                const repoList = document.getElementById('repoList');
-                
-                repoList.innerHTML = '';
-                
-                if (repos.length === 0) {
-                    repoList.innerHTML = '<li class="repo-item">No repositories found</li>';
-                    return;
+                const reposData = await reposResponse.json();
+                repositories = reposData.repositories;
+
+                // Fetch starred repositories
+                const starredResponse = await fetch('https://api.github.com/user/starred', {
+                    headers: { Authorization: `token ${currentToken}` }
+                });
+
+                let starredRepos = [];
+                if (starredResponse.ok) {
+                    starredRepos = await starredResponse.json();
                 }
 
-                repos.forEach(repo => {
-                    const listItem = document.createElement('li');
-                    listItem.className = 'repo-item';
-                    listItem.innerHTML = `
-                        <div class="repo-name">${repo.full_name}</div>
-                        <div class="repo-description">${repo.description || 'No description available'}</div>
-                    `;
-                    repoList.appendChild(listItem);
-                });
+                displayRepositories(repositories, starredRepos);
+                
             } catch (error) {
-                console.error('Error fetching repositories:', error);
-                document.getElementById('repoListContainer').innerHTML = 
-                    '<div class="result error">Error fetching repositories. Please try again.</div>';
+                console.error('Error loading repositories:', error);
+                repoListElement.innerHTML = '<div class="empty-state"><h3>Error loading repositories</h3><p>Please try again later</p></div>';
             }
+        }
+
+        function displayRepositories(repos, starredRepos = []) {
+            const repoListElement = document.getElementById('repoList');
+            const repoCountElement = document.getElementById('repoCount');
+            
+            if (repos.length === 0) {
+                repoListElement.innerHTML = '<div class="empty-state"><h3>No repositories found</h3><p>You don\'t have any repositories yet</p></div>';
+                repoCountElement.textContent = '0';
+                return;
+            }
+
+            const starredNames = new Set(starredRepos.map(repo => repo.full_name));
+
+            repoListElement.innerHTML = repos.map(repo => {
+                const isStarred = starredNames.has(repo.full_name);
+                return `
+                    <div class="repo-item">
+                        <div class="repo-info">
+                            <div class="repo-name">
+                                <a href="${repo.html_url}" target="_blank">${repo.full_name}</a>
+                                ${isStarred ? '<span class="star-indicator">⭐</span>' : ''}
+                            </div>
+                            <div class="repo-description">${repo.description || 'No description available'}</div>
+                            <div class="repo-meta">
+                                <span>🔤 ${repo.language || 'Unknown'}</span>
+                                <span>⭐ ${repo.stargazers_count || 0}</span>
+                                <span>🍴 ${repo.forks_count || 0}</span>
+                                <span>📅 ${new Date(repo.updated_at).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                        <div class="repo-actions">
+                            <button class="btn btn-small btn-star ${isStarred ? 'starred' : ''}" 
+                                onclick="toggleStar('${repo.full_name}', this)">
+                                ${isStarred ? '⭐ Starred' : '⭐ Star'}
+                            </button>
+                            <button class="btn btn-small btn-issue" 
+                                onclick="openModal('issueModal', '${repo.full_name}')">
+                                📝 Issue
+                            </button>
+                            <button class="btn btn-small" 
+                                onclick="openModal('updateModal', '${repo.full_name}')">
+                                🔧 Update
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            repoCountElement.textContent = repos.length;
+        }
+
+        async function toggleStar(repoName, button) {
+            const isStarred = button.classList.contains('starred');
+            const method = isStarred ? 'DELETE' : 'PUT';
+            
+            try {
+                const currentToken = window.githubToken;
+                const response = await fetch(`https://api.github.com/user/starred/${repoName}`, {
+                    method: method,
+                    headers: { Authorization: `token ${currentToken}` }
+                });
+
+                if (response.status === 204) {
+                    if (isStarred) {
+                        button.classList.remove('starred');
+                        button.innerHTML = '⭐ Star';
+                        // Remove star indicator from repo name
+                        const repoItem = button.closest('.repo-item');
+                        const starIndicator = repoItem.querySelector('.star-indicator');
+                        if (starIndicator) starIndicator.remove();
+                    } else {
+                        button.classList.add('starred');
+                        button.innerHTML = '⭐ Starred';
+                        // Add star indicator to repo name
+                        const repoItem = button.closest('.repo-item');
+                        const repoNameDiv = repoItem.querySelector('.repo-name');
+                        if (!repoNameDiv.querySelector('.star-indicator')) {
+                            repoNameDiv.innerHTML += '<span class="star-indicator">⭐</span>';
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error toggling star:', error);
+            }
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const repoItems = document.querySelectorAll('.repo-item');
+            
+            repoItems.forEach(item => {
+                const repoName = item.querySelector('.repo-name').textContent.toLowerCase();
+                const repoDesc = item.querySelector('.repo-description').textContent.toLowerCase();
+                
+                if (repoName.includes(searchTerm) || repoDesc.includes(searchTerm)) {
+                    item.style.display = 'grid';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
         });
 
+        // Event listeners
+        document.getElementById('loadReposBtn').addEventListener('click', loadRepositories);
+        document.getElementById('refreshBtn').addEventListener('click', loadRepositories);
+
         // Create issue
-        document.getElementById('createIssue').addEventListener('click', async () => {
-            const repo = document.getElementById('repoName').value;
+        document.getElementById('createIssueBtn').addEventListener('click', async () => {
             const title = document.getElementById('issueTitle').value;
             const body = document.getElementById('issueBody').value;
 
-            if (!repo || !title) {
-                showResult('issueResult', 'Please fill in repository and title fields', true);
+            if (!title) {
+                showResult('issueResult', 'Please enter an issue title', 'error');
                 return;
             }
 
@@ -257,40 +345,36 @@
                         'Content-Type': 'application/json',
                         Authorization: `token ${currentToken}`
                     },
-                    body: JSON.stringify({ repo, title, body })
+                    body: JSON.stringify({ repo: currentRepo, title, body })
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    showResult('issueResult', `✅ Issue created successfully! View at: ${data.html_url}`);
-                    // Clear form
-                    document.getElementById('repoName').value = '';
-                    document.getElementById('issueTitle').value = '';
-                    document.getElementById('issueBody').value = '';
+                    showResult('issueResult', `✅ Issue created! View at: ${data.html_url}`, 'success');
+                    setTimeout(() => closeModal('issueModal'), 2000);
                 } else {
-                    showResult('issueResult', '❌ Error creating issue. Check repository name and permissions.', true);
+                    showResult('issueResult', '❌ Error creating issue', 'error');
                 }
             } catch (error) {
                 console.error(error);
-                showResult('issueResult', '❌ Network error. Please try again.', true);
+                showResult('issueResult', '❌ Network error', 'error');
             }
         });
 
         // Update issue
-        document.getElementById('patchIssue').addEventListener('click', async () => {
-            const repo = document.getElementById('patchRepo').value;
-            const issueNumber = document.getElementById('patchIssueNumber').value;
-            const title = document.getElementById('patchTitle').value;
-            const body = document.getElementById('patchBody').value;
+        document.getElementById('updateIssueBtn').addEventListener('click', async () => {
+            const issueNumber = document.getElementById('updateIssueNumber').value;
+            const title = document.getElementById('updateTitle').value;
+            const body = document.getElementById('updateBody').value;
 
-            if (!repo || !issueNumber) {
-                showResult('patchResult', 'Please fill in repository and issue number fields', true);
+            if (!issueNumber) {
+                showResult('updateResult', 'Please enter an issue number', 'error');
                 return;
             }
 
             try {
                 const currentToken = window.githubToken;
-                const response = await fetch(`https://api.github.com/repos/${repo}/issues/${issueNumber}`, {
+                const response = await fetch(`https://api.github.com/repos/${currentRepo}/issues/${issueNumber}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
@@ -301,81 +385,25 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    showResult('patchResult', `✅ Issue updated successfully! View at: ${data.html_url}`);
+                    showResult('updateResult', `✅ Issue updated! View at: ${data.html_url}`, 'success');
+                    setTimeout(() => closeModal('updateModal'), 2000);
                 } else {
-                    showResult('patchResult', '❌ Error updating issue. Check repository name, issue number, and permissions.', true);
+                    showResult('updateResult', '❌ Error updating issue', 'error');
                 }
             } catch (error) {
                 console.error(error);
-                showResult('patchResult', '❌ Network error. Please try again.', true);
+                showResult('updateResult', '❌ Network error', 'error');
             }
         });
 
-        // Star repository
-        document.getElementById('starBtn').addEventListener('click', async () => {
-            const repo = document.getElementById('starRepo').value;
-            
-            if (!repo) {
-                showResult('starResult', 'Please enter a repository name', true);
-                return;
-            }
-
-            try {
-                const currentToken = window.githubToken;
-                const response = await fetch(`https://api.github.com/user/starred/${repo}`, {
-                    method: 'PUT',
-                    headers: {
-                        Authorization: `token ${currentToken}`
-                    }
-                });
-
-                if (response.status === 204) {
-                    showResult('starResult', `⭐ Repository ${repo} starred successfully!`);
-                    document.getElementById('starRepo').value = '';
-                } else {
-                    showResult('starResult', '❌ Failed to star repository. Check repository name.', true);
-                }
-            } catch (error) {
-                console.error(error);
-                showResult('starResult', '❌ Network error. Please try again.', true);
-            }
-        });
-
-        // Unstar repository
-        document.getElementById('unstarBtn').addEventListener('click', async () => {
-            const repo = document.getElementById('unstarRepo').value;
-            
-            if (!repo) {
-                showResult('unstarResult', 'Please enter a repository name', true);
-                return;
-            }
-
-            try {
-                const currentToken = window.githubToken;
-                const response = await fetch(`https://api.github.com/user/starred/${repo}`, {
-                    method: 'DELETE',
-                    headers: {
-                        Authorization: `token ${currentToken}`
-                    }
-                });
-
-                if (response.status === 204) {
-                    showResult('unstarResult', `💔 Repository ${repo} unstarred successfully!`);
-                    document.getElementById('unstarRepo').value = '';
-                } else {
-                    showResult('unstarResult', '❌ Failed to unstar repository. Check repository name.', true);
-                }
-            } catch (error) {
-                console.error(error);
-                showResult('unstarResult', '❌ Network error. Please try again.', true);
-            }
-        });
-
-        // Logout functionality
+        // Logout
         document.getElementById('logoutBtn').addEventListener('click', () => {
             window.githubToken = null;
             window.location.reload();
         });
+
+        // Initialize
+        loadUserInfo();
     </script>
 </body>
 </html>
