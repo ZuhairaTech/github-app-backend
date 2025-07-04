@@ -532,7 +532,7 @@
                 max-width: 900px;
             }
             #commitChart {
-                max-width: 500px;
+                margin-top: 20px;
             }
         }
         @media (max-width: 768px) {
