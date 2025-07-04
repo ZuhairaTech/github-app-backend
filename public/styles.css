@@ -531,6 +531,12 @@
             margin-bottom: 10px;
         }
 
+        @media (min-width: 1000px) {
+            .chart-container {
+                width:80%;
+                max-width: 1000px;
+            }
+        }
         @media (max-width: 768px) {
             .repo-item {
                 grid-template-columns: 1fr;
