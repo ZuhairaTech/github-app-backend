@@ -514,17 +514,38 @@
         }
 
 
-        // Update the logout function to clear localStorage
         document.getElementById('logoutBtn').addEventListener('click', () => {
             window.githubToken = null;
             localStorage.removeItem('githubToken'); // Clear saved token
-            
+
             // Reset UI to logged out state
             document.getElementById('userInfo').innerHTML = '';
             document.getElementById('loginBtn').style.display = 'inline-block';
             document.getElementById('logoutBtn').style.display = 'none';
-            document.getElementById('repoList').innerHTML = '<div class="empty-state"><h3>No repositories loaded</h3><p>Click "Load Repositories" to fetch your GitHub repositories</p></div>';
+
+            // Reset repo list
+            document.getElementById('repoList').innerHTML = `
+                <div class="empty-state">
+                    <h3>No repositories loaded</h3>
+                    <p>Click "Load Repositories" to fetch your GitHub repositories</p>
+                </div>
+            `;
+
+            // Reset repo count
+            document.getElementById('repoCount').innerText = '0';
+
+            // Reset bar chart canvas
+            const canvas = document.getElementById('commitChart');
+            const context = canvas.getContext('2d');
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Optional: If you are using Chart.js, also destroy the chart instance if needed
+            if (window.commitChartInstance) {
+                window.commitChartInstance.destroy();
+                window.commitChartInstance = null;
+            }
         });
+
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', () => {
