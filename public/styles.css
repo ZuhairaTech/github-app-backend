@@ -207,8 +207,8 @@
         }
 
         #commitChart {
-            margin: auto;
-            padding: auto;
+            margin: 10px 20px;
+            padding: 0;
         }
 
         .btn:hover {
