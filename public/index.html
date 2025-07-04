@@ -138,10 +138,20 @@
         const urlParams = new URLSearchParams(window.location.search);
         let token = urlParams.get('token');
 
+        // If token is in URL, save it to localStorage and clean URL
         if (token) {
+            localStorage.setItem('githubToken', token);
             window.githubToken = token;
+            // Clean the URL by removing the token parameter
             if (window.history.replaceState) {
-                window.history.replaceState({}, document.title, '/');
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        } else {
+            // If no token in URL, check localStorage
+            const savedToken = localStorage.getItem('githubToken');
+            if (savedToken) {
+                window.githubToken = savedToken;
+                token = savedToken;
             }
         }
 
@@ -504,14 +514,24 @@
         }
 
 
-        // Logout
+        // Update the logout function to clear localStorage
         document.getElementById('logoutBtn').addEventListener('click', () => {
             window.githubToken = null;
-            window.location.reload();
+            localStorage.removeItem('githubToken'); // Clear saved token
+            
+            // Reset UI to logged out state
+            document.getElementById('userInfo').innerHTML = '';
+            document.getElementById('loginBtn').style.display = 'inline-block';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('repoList').innerHTML = '<div class="empty-state"><h3>No repositories loaded</h3><p>Click "Load Repositories" to fetch your GitHub repositories</p></div>';
         });
 
-        // Initialize
-        loadUserInfo();
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.githubToken) {
+                loadUserInfo();
+            }
+        });
     </script>
 </body>
 </html>
