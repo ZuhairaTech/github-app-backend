@@ -531,10 +531,10 @@
             margin-bottom: 10px;
         }
 
-        @media (min-width: 1000px) {
+        @media (min-width: 900px) {
             .chart-container {
-                width:80%;
-                max-width: 1000px;
+                width:70%;
+                max-width: 900px;
             }
         }
         @media (max-width: 768px) {
