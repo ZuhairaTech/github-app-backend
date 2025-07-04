@@ -515,6 +515,9 @@
             color: #4a5d4a;
         }
 
+        #chartTab {
+            padding: 30px auto;
+        }
         .empty-state {
             text-align: center;
             padding: 60px 20px;
