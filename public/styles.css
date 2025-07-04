@@ -199,6 +199,7 @@
             margin: auto;
             position: relative;
             width:80%;
+            max-width: 660px;
             height: 400px;
             display: flex;
             flex-direction: column;
